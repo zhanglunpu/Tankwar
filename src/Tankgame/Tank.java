@@ -3,10 +3,12 @@ package Tankgame;
 public class Tank {
     private int x = 100;
     private int y = 100;
+    private int type;
     private int direct = 1;
     private boolean dead = false;
 
-    public Tank(int x, int y, int direct) {
+    public Tank(int x, int y, int type,int direct) {
+        this.type = type;
         this.x = x;
         this.y = y;
         this.direct = direct;
@@ -51,5 +53,13 @@ public class Tank {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

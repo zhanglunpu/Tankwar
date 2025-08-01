@@ -7,32 +7,52 @@ import java.awt.event.KeyListener;
 import java.util.Vector;
 
 public class MyPanel extends JPanel implements KeyListener {
-    Graphics g;
-    Tank tank = new Tank(100, 100, 1);
+    Tank tank = new Tank(100, 100, 1,1);
     Vector<Bullet> enermybullets = new Vector();
     Vector<EnermyTank> enermytanks = new Vector();
     boolean loop = false;
-    boolean flag = true;
-public MyPanel() {
-    for (int i = 0; i < 3; i++) {
-        enermytanks.add(new EnermyTank(100 * i, 0, 3));
+    boolean flag = false;
+    Trigger trigger = new Trigger();
+    Thread Tri = new Thread(trigger);
+
+
+    public MyPanel() {
+        for (int i = 0; i < 3; i++) {
+
+            enermytanks.add(new EnermyTank(100 * i, 0, 2,3));
+        }
+        for (int i = 0; i < enermytanks.size(); i++) {
+            enermybullets.add(new Bullet(enermytanks.get(i), this));
+        }
     }
 
-}
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, 1000, 750);
-            for (EnermyTank en : enermytanks) {
-                drawtank(en.getX(), en.getY(), 2, 3, g);
-
+        for (EnermyTank en : enermytanks) {
+            drawtank(en.getX(), en.getY(), 2, 3, g);
+            Thread thread = new Thread();
+            thread.start();
+        }
+        drawtank(tank.getX(), tank.getY(), 1, tank.getDirect(), g);
+        if (flag == true) {
+            for (Bullet b : enermybullets) {
+                Bullet bullet = b;
+                Thread thread = new Thread(bullet);
+                drawbullets(bullet.getX(), bullet.getY(), 2, bullet.getDirect(), g);
+                thread.start();
+                flag = false;
+            }
+            for (int i = 0; i < enermytanks.size(); i++) {
+                enermybullets.add(new Bullet(enermytanks.get(i), this));
+            }
+//            Tri.start();
         }
 
-        drawtank(tank.getX(), tank.getY(), 1, tank.getDirect(), g);
-
         if (loop == true) {
-            Bullet bullet = new Bullet(tank,this);
+            Bullet bullet = new Bullet(tank, this);
             Thread thread = new Thread(bullet);
             drawbullets(bullet.getX(), bullet.getY(), 1, tank.getDirect(), g);
             thread.start();
@@ -127,7 +147,11 @@ public MyPanel() {
             tank.moveleft();
         } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             loop = true;
-        } else {
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_G){
+           flag = true;
+        }
+        else {
             tank.setDirect(tank.getDirect());
         }
         repaint();

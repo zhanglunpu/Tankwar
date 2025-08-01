@@ -89,25 +89,25 @@ public class Bullet implements Runnable {
 
     public void moveup() {
         y -= speed;
-        panel.drawbullets(x,y,1,direct,panel.getGraphics());
+        panel.drawbullets(x,y,tank.getType(),direct,panel.getGraphics());
         panel.repaint();
     }
 
     public void movedown() {
         y += speed;
-        panel.drawbullets(x,y,1,direct,panel.getGraphics());
+        panel.drawbullets(x,y,tank.getType(),direct,panel.getGraphics());
         panel.repaint();
     }
 
     public void moveleft() {
         x -= speed;
-        panel.drawbullets(x,y,1,direct,panel.getGraphics());
+        panel.drawbullets(x,y,tank.getType(),direct,panel.getGraphics());
         panel.repaint();
     }
 
     public void moveright() {
         x += speed;
-        panel.drawbullets(x,y,1,direct,panel.getGraphics());
+        panel.drawbullets(x,y,tank.getType(),direct,panel.getGraphics());
         panel.repaint();
     }
 
