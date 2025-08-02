@@ -64,7 +64,10 @@ public class MyPanel extends JPanel implements KeyListener, Runnable {
         }
         //绘制敌人坦克和子弹
         for (EnermyTank en : enermytanks) {
-            drawtank(en.getX(), en.getY(), 2, 3, g);
+            drawtank(en.getX(), en.getY(), 2, en.getDirect(), g);
+            if(en.isCanchage()){
+                new Thread(en).start();
+            }
             for (int i = 0; i < en.bullets.size(); i++) {
                 Bullet bullet = en.bullets.get(i);
                 if (bullet.isLive()) {
@@ -122,12 +125,13 @@ public class MyPanel extends JPanel implements KeyListener, Runnable {
     //判断敌方坦克是否被子弹击中
     public void checkEnlive() {
         if (mytank.bullet != null && mytank.bullet.isLive()) {
-            for (int i = enermytanks.size() - 1; i >= 0; i--) {
+            for (int i = 0; i < enermytanks.size(); i++) {
                 EnermyTank en = enermytanks.get(i);
                 if (mytank.bullet.getX() > en.getX() - 10 && mytank.bullet.getY() > en.getY() - 10
                         && mytank.bullet.getX() < en.getX() + 60 && mytank.bullet.getY() < en.getY() + 60) {
                     Bomb bomb = new Bomb(en.getX(), en.getY());
                     bombs.add(bomb);
+                    repaint();
                     enermytanks.remove(i);
                     mytank.bullet.setLive(false);
                     break;
@@ -178,15 +182,14 @@ public class MyPanel extends JPanel implements KeyListener, Runnable {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            checkEnlive();
-            // 更新爆炸效果的生命周期
-            for (int i = bombs.size() - 1; i >= 0; i--) {
+            for(int i = bombs.size()-1; i >= 0; i--) {
                 Bomb bomb = bombs.get(i);
                 bomb.Healthdown();
-                if (!bomb.isLive()) {
-                    bombs.remove(i);
+                if(!bomb.isLive()){
+                    break;
                 }
             }
+            checkEnlive();
             repaint();
         }
     }

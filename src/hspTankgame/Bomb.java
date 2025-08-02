@@ -3,7 +3,7 @@ package hspTankgame;
 public class Bomb {
     private int x, y;
     private boolean isLive = true;
-    private int health = 9;
+    private int health = 5;
 
     public Bomb(int x, int y) {
         this.x = x;
