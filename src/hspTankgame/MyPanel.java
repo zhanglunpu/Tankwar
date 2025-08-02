@@ -6,16 +6,21 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Vector;
 
-public class MyPanel extends JPanel implements KeyListener,Runnable {
+public class MyPanel extends JPanel implements KeyListener, Runnable {
     Hero mytank = new Hero(100, 100, 1, 1);
     Vector<EnermyTank> enermytanks = new Vector();
+    static int emsize;
 
 
     public MyPanel() {
-        for (int i = 0; i < 3; i++) {
-
-            enermytanks.add(new EnermyTank(100 * i, 0, 2, 3));
+        for (int i = 0; i < 5; i++) {
+            EnermyTank em = new EnermyTank(100 * i, 0, 2, 3);
+            enermytanks.add(em);
+            Bullet embullet = new Bullet(em.getX() + 25, em.getY() + 50, em.getDirect());
+            em.bullets.add(embullet);
+            new Thread(embullet).start();
         }
+        emsize = enermytanks.size();
         new Thread(this).start();
     }
 
@@ -24,9 +29,19 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
         super.paint(g);
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, 1000, 750);
+        //绘制敌人坦克和子弹
         for (EnermyTank en : enermytanks) {
             drawtank(en.getX(), en.getY(), 2, 3, g);
+            for (int i = 0; i < en.bullets.size(); i++) {
+                Bullet bullet = en.bullets.get(i);
+                if (bullet.isLive()) {
+                    g.fillOval(bullet.getX(), bullet.getY(), 10, 10);
+                } else {
+                    en.bullets.remove(bullet);
+                }
+            }
         }
+        //绘制我方坦克
         drawtank(mytank.getX(), mytank.getY(), 1, mytank.getDirect(), g);
         if (mytank.bullet != null && mytank.bullet.isLive()) {
             switch (mytank.getType()) {
@@ -43,6 +58,7 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
 
     }
 
+    //绘制坦克的方法
     public void drawtank(int x, int y, int type, int direct, Graphics g) {
         switch (type) {
             case 1:
@@ -84,6 +100,19 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
         }
     }
 
+    //判断敌方坦克是否被子弹击中
+    public void checkEnlive() {
+        if (mytank.bullet != null && mytank.bullet.isLive()) {
+            for (int i = 0; i < enermytanks.size(); i++) {
+                EnermyTank en = enermytanks.get(i);
+                if (mytank.bullet.getX() > en.getX() - 10 && mytank.bullet.getY() > en.getY() - 10
+                        && mytank.bullet.getX() < en.getX() + 60 && mytank.bullet.getY() < en.getY() + 60) {
+                    enermytanks.remove(en);
+                    mytank.bullet.setLive(false);
+                }
+            }
+        }
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -121,12 +150,13 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
 
     @Override
     public void run() {
-        while(true){
+        while (true) {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            checkEnlive();
             repaint();
         }
     }

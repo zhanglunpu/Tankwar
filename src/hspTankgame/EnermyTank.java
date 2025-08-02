@@ -3,7 +3,7 @@ package hspTankgame;
 import java.util.Vector;
 
 public class EnermyTank extends Tank {
-    private Vector<Bullet> bullets;
+    Vector<Bullet> bullets = new Vector<Bullet>();
     public EnermyTank(int x, int y,int type, int direct) {
         super(x, y,type, direct);
     }

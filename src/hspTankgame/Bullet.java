@@ -6,7 +6,7 @@ public class Bullet implements Runnable {
     private int y;
     private int direct;
     private int speed = 5;
-    private boolean isLive = true;
+    private boolean isLive = false;
 
     public Bullet(int x, int y, int direct) {
         this.x = x;
@@ -17,6 +17,7 @@ public class Bullet implements Runnable {
     @Override
     public void run() {
         while (true) {
+            setLive(true);
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
@@ -39,6 +40,9 @@ public class Bullet implements Runnable {
             System.out.println("x: " + x + " y: " + y);
             if (!(x > 0 && x < 1000 && y > 0 && y < 750)) {
                 isLive = false;
+                break;
+            }
+            if(!isLive){
                 break;
             }
         }
