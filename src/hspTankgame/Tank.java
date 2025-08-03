@@ -5,9 +5,10 @@ public class Tank {
     private int y = 100;
     private int type;
     private int direct = 1;
+    private int speed = 3;
     private boolean dead = false;
 
-    public Tank(int x, int y, int type,int direct) {
+    public Tank(int x, int y, int type, int direct) {
         this.type = type;
         this.x = x;
         this.y = y;
@@ -15,19 +16,32 @@ public class Tank {
     }
 
     public void moveup() {
-        y -= 3;
+        if (!(y - speed >= 0)) {
+            return;
+        }
+        y -= speed;
     }
 
     public void movedown() {
-        y += 3;
+        if (!(y + 60  <= 750)) {
+            return;
+        }
+
+        y += speed;
     }
 
     public void moveleft() {
-        x -= 3;
+        if (!(x - speed >= 0)) {
+            return;
+        }
+        x -= speed;
     }
 
     public void moveright() {
-        x += 3;
+        if (!(x + 60 +speed <= 1000)) {
+            return;
+        }
+        x += speed;
     }
 
     public int getDirect() {
